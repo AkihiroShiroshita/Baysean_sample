@@ -102,3 +102,29 @@ print(
   mcmc_result,
   probs = c(0.025, 0.5, 0.975)
 )
+#hierarchial Beayse
+#sample_hierarchial
+#unique ID
+df <- na.omit(df)
+sample_size = nrow(df)
+df$id = c(1:nrow(df)) #if some rows do have same id 
+N_id = length(unique(df$id))
+df_hierarchial_list <- list(s_id = df$id,
+                            age = df$age, 
+                            hospitalization = df$hospitalization,
+                            N=sample_size,
+                            N_id = N_id)
+mcmc_result <- stan(
+  file = "sample_hierarchial.stan",
+  data = df_hierarchial_list,
+  seed=1,
+  chains=4,
+  iter = 5000,
+  warmup = 1000,
+  thin = 1
+)
+traceplot(mcmc_result, inc_warmup=T)
+print(
+  mcmc_result,
+  probs = c(0.025, 0.5, 0.975)
+)
