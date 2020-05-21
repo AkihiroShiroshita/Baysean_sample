@@ -63,3 +63,26 @@ anova <- brm(
 anova
 eff <- marginal_effects(anova)
 plot(eff, points = FALSE)
+#GLMM
+#random intercept
+glmm <- brm(
+  formula = hospitalization ~ age + hr + (1|id),
+  family = gaussian(),
+  data = df,
+  seed =1,
+  prior = c(set_prior("", class = "Intercept"),
+            set_prior("", class = "sd"))
+)
+glmm
+plot(glmm)
+stanplot(glmm, type = "rhat")
+#random intercept + slope
+glmm_update <- brm(
+  formula = hospitalization ~ age + (age||id),
+  family = gaussian(),
+  data = df,
+  seed = 1,
+  iter = 6000,
+  warmup = 5000
+)
+glmm_update
